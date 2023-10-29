@@ -1,0 +1,5 @@
+main: ro.smartnpc.SmartNPC
+name: SmartNPC
+version: 1.0
+authors: [Dragos Ghinea, Stefania Rincu]
+description: Reinforcement learning college project
