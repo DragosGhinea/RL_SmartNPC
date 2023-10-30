@@ -1,7 +1,7 @@
 main: ro.smartnpc.SmartNPC
 name: SmartNPC
 version: 1.0
-authors: [Dragos Ghinea, Stefania Rincu]
+authors: [Dragos Ghinea, Stefania Rincu, Bogdan Iliescu]
 description: Reinforcement learning college project
 api-version: 1.20
 depend: [Citizens]
@@ -17,3 +17,6 @@ commands:
   smartnpc_environment:
     description: SmartNPC environment commands
     aliases: [snpc_env]
+  smartnpc_agent:
+    description: SmartNPC agent commands
+    aliases: [snpc_agent]
