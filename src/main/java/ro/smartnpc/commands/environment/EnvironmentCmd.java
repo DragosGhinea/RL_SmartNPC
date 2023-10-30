@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ro.smartnpc.commands.CommandRoute;
 import ro.smartnpc.commands.environment.routes.LoadRoute;
+import ro.smartnpc.commands.environment.routes.LoadSchematicRoute;
 import ro.smartnpc.commands.environment.routes.TpRoute;
 
 import java.util.Collections;
@@ -19,6 +20,7 @@ public class EnvironmentCmd implements TabExecutor {
     Map<String, CommandRoute> routes = new HashMap<>() {{
         put("load", new LoadRoute());
         put("tp", new TpRoute());
+        put("loadSchematic", new LoadSchematicRoute());
     }};
 
     private EnvironmentCmd() {}
@@ -53,7 +55,7 @@ public class EnvironmentCmd implements TabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         List<String> toReturn = null;
-        String arg = args[0].toLowerCase();
+        String arg = args[0];
 
         if (args.length == 1)
             return routes.keySet().stream().filter(s1 -> s1.startsWith(arg)).toList();

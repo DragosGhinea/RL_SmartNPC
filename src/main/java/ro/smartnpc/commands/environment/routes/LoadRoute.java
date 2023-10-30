@@ -21,11 +21,6 @@ public class LoadRoute implements CommandRoute {
 
     @Override
     public boolean isConsoleAllowed() {
-        return false;
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, String[] args) {
-        return null;
+        return true;
     }
 }

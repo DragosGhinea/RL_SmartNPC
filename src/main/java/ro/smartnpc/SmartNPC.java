@@ -26,8 +26,8 @@ public class SmartNPC extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        //worldUtils = new WorldUtilsSlime();
-        worldUtils = new WorldUtilsClassic();
+        worldUtils = new WorldUtilsSlime();
+        //worldUtils = new WorldUtilsClassic();
 
         CommandsLoader.init();
         getLogger().info("SmartNPC has been enabled!");

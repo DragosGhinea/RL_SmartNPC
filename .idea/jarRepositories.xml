@@ -12,9 +12,19 @@
       <option name="url" value="https://repo.infernalsuite.com/repository/maven-releases/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="enginehub-maven" />
+      <option name="name" value="enginehub-maven" />
+      <option name="url" value="https://maven.enginehub.org/repo/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="flowpowered" />
       <option name="name" value="flowpowered" />
       <option name="url" value="https://repo.rapture.pw/repository/maven-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="FAWE" />
+      <option name="name" value="FAWE" />
+      <option name="url" value="https://mvnrepository.com/artifact/com.fastasyncworldedit/FastAsyncWorldEdit-Core" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
