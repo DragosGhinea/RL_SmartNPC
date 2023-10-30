@@ -169,6 +169,8 @@ world-settings:
       other-multiplier: 0.0
     max-tnt-per-tick: 100
     verbose: false
+  faweregentempworld:
+    verbose: false
 players:
   disable-saving: false
 config-version: 12
