@@ -6,9 +6,7 @@ import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ro.smartnpc.commands.CommandRoute;
-import ro.smartnpc.commands.environment.routes.LoadRoute;
-import ro.smartnpc.commands.environment.routes.LoadSchematicRoute;
-import ro.smartnpc.commands.environment.routes.TpRoute;
+import ro.smartnpc.commands.environment.routes.InitRoute;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,9 +16,7 @@ import java.util.Map;
 public class EnvironmentCmd implements TabExecutor {
 
     Map<String, CommandRoute> routes = new HashMap<>() {{
-        put("load", new LoadRoute());
-        put("tp", new TpRoute());
-        put("loadSchematic", new LoadSchematicRoute());
+        put("init", new InitRoute());
     }};
 
     private EnvironmentCmd() {}

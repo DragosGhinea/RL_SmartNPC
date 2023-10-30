@@ -11,6 +11,9 @@ softdepend:
   - Sentinel
 
 commands:
+  smartnpc_world:
+    description: SmartNPC world commands
+    aliases: [snpc_world]
   smartnpc_environment:
     description: SmartNPC environment commands
     aliases: [snpc_env]

@@ -55,6 +55,11 @@ public class WorldUtilsSlime implements WorldUtils {
 
     @Override
     public World loadWorld(String worldName) {
+        World alreadyExistingWorld = Bukkit.getWorld(worldName);
+        if (alreadyExistingWorld != null) {
+            return alreadyExistingWorld;
+        }
+
         SlimeWorld slimeWorld = loadedEmptySlimeWorld.clone(worldName);
         try {
             slimePlugin.loadWorld(slimeWorld);
