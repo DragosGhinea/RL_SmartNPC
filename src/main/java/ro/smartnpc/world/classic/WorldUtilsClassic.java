@@ -1,7 +1,9 @@
 package ro.smartnpc.world.classic;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import ro.smartnpc.world.WorldUtils;
 
 import java.util.HashSet;
@@ -12,12 +14,23 @@ public class WorldUtilsClassic implements WorldUtils {
     private Set<String> loadedWorldsCache = new HashSet<>();
 
     private World createWorld(String worldName) {
-        WorldGeneratorClassic worldGeneratorClassic = new WorldGeneratorClassic();
-        return worldGeneratorClassic.generateWorld(worldName);
+        WorldCreator wc = new WorldCreator(worldName);
+        wc.generator(new EmptyChunkGenerator());
+        wc.generateStructures(false);
+        wc.type(WorldType.FLAT);
+        return wc.createWorld();
     }
 
     private World loadWorldIntern(String worldName) {
-        return null;
+        World alreadyExistingWorld = Bukkit.getWorld(worldName);
+        if (alreadyExistingWorld != null) {
+            return alreadyExistingWorld;
+        }
+
+        WorldCreator w = new WorldCreator(worldName);
+        w.type(WorldType.FLAT);
+        w.environment(World.Environment.NORMAL);
+        return Bukkit.getServer().createWorld(w);
     }
 
     @Override

@@ -44,8 +44,8 @@ npc:
         updateSkins: false
       spawned: true
       sentinel:
-        stats_ticksSpawned: 60166
-        stats_timesSpawned: 9
+        stats_ticksSpawned: 85043
+        stats_timesSpawned: 10
         stats_arrowsFired: 0
         stats_potionsThrow: 0
         stats_fireballsFired: 0
@@ -113,7 +113,7 @@ npc:
             '0': PLAYER
       owner:
         uuid: 9d8bb82e-03cb-36b1-9763-1d0d1e9e1838
-    traitnames: inventory,scoreboardtrait,skintrait,equipment,mounttrait,location,spawned,owner,type,sentinel
+    traitnames: sentinel,location,scoreboardtrait,inventory,owner,equipment,type,skintrait,mounttrait,spawned
     navigator:
       speedmodifier: '1.0'
       avoidwater: false

@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import ro.smartnpc.commands.CommandsLoader;
 import ro.smartnpc.world.WorldUtils;
+import ro.smartnpc.world.classic.WorldUtilsClassic;
 import ro.smartnpc.world.slime.WorldUtilsSlime;
 
 public class SmartNPC extends JavaPlugin {
@@ -25,7 +26,8 @@ public class SmartNPC extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        worldUtils = new WorldUtilsSlime();
+        //worldUtils = new WorldUtilsSlime();
+        worldUtils = new WorldUtilsClassic();
 
         CommandsLoader.init();
         getLogger().info("SmartNPC has been enabled!");
