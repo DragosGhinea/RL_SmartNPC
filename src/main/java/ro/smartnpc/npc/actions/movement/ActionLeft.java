@@ -1,6 +1,7 @@
 package ro.smartnpc.npc.actions.movement;
 
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 import ro.smartnpc.npc.EnvironmentNPC;
 import ro.smartnpc.npc.actions.Action;
@@ -19,6 +20,9 @@ public class ActionLeft implements Action {
             Vector direction = npc.getEntity().getLocation().getDirection();
             Vector leftDirection = new Vector(direction.getZ(), direction.getY(), -direction.getX());
 
-            npc.getEntity().setVelocity(leftDirection.multiply(0.5));
+            Entity entity = npc.getEntity();
+            entity.setVelocity(entity.getVelocity().add(leftDirection.multiply(0.5)));
+
+            entity.setRotation(entity.getLocation().getYaw() - 90, entity.getLocation().getPitch());
         }
 }
