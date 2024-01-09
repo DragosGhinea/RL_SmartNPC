@@ -1,11 +1,11 @@
-package ro.smartnpc.npc.actions.movement;
+package ro.smartnpc.algorithms.actions.movement;
 
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
-import ro.smartnpc.npc.actions.Action;
-import ro.smartnpc.npc.actions.ActionType;
-import ro.smartnpc.npc.EnvironmentNPCDebug;
+import ro.smartnpc.algorithms.actions.Action;
+import ro.smartnpc.algorithms.actions.ActionType;
+import ro.smartnpc.npc.EnvironmentNPC;
 
 public class ActionLeft implements Action {
 
@@ -15,7 +15,7 @@ public class ActionLeft implements Action {
         }
 
         @Override
-        public void execute(EnvironmentNPCDebug envNPC) {
+        public void execute(EnvironmentNPC envNPC) {
             NPC npc = envNPC.getNPC();
             Vector direction = npc.getEntity().getLocation().getDirection();
             Vector leftDirection = new Vector(direction.getZ(), direction.getY(), -direction.getX());

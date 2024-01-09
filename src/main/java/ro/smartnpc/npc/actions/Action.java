@@ -1,14 +1,14 @@
 package ro.smartnpc.npc.actions;
 
-import ro.smartnpc.npc.EnvironmentNPC;
+import ro.smartnpc.npc.EnvironmentNPCDebug;
 
 public interface Action {
 
     ActionType getActionType();
 
-    void execute(EnvironmentNPC npc);
+    void execute(EnvironmentNPCDebug npc);
 
-    default void executeContinuous(EnvironmentNPC npc, double... args) {
+    default void executeContinuous(EnvironmentNPCDebug npc, double... args) {
         execute(npc);
     }
 }

@@ -1,8 +1,8 @@
-package ro.smartnpc.commands.agent.routes;
+package ro.smartnpc.commands.debug.agent.routes;
 
 import org.bukkit.command.CommandSender;
 import ro.smartnpc.commands.CommandRoute;
-import ro.smartnpc.environment.Environment;
+import ro.smartnpc.environment.EnvironmentForDebug;
 import ro.smartnpc.npc.actions.Action;
 import ro.smartnpc.npc.actions.ActionType;
 
@@ -16,14 +16,14 @@ public class ActionRoute implements CommandRoute {
             return false;
         }
 
-        Environment environment = Environment.getRunningInstance();
-        if (environment == null)
+        EnvironmentForDebug environmentForDebug = EnvironmentForDebug.getRunningInstance();
+        if (environmentForDebug == null)
             return false;
 
         Action action;
         try{
             ActionType actionType = ActionType.valueOf(args[1]);
-            action = Environment.actionList.stream()
+            action = EnvironmentForDebug.actionList.stream()
                     .filter(action1 -> action1.getActionType().equals(actionType))
                     .findAny().orElse(null);
         } catch (IllegalArgumentException e) {
@@ -36,7 +36,7 @@ public class ActionRoute implements CommandRoute {
             return false;
         }
 
-        environment.executeAction(action);
+        environmentForDebug.executeAction(action);
         sender.sendMessage("§aAction executed!");
 
         return false;
@@ -49,6 +49,6 @@ public class ActionRoute implements CommandRoute {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, String[] args) {
-        return Environment.actionList.stream().map(action -> action.getActionType().name()).toList();
+        return EnvironmentForDebug.actionList.stream().map(action -> action.getActionType().name()).toList();
     }
 }

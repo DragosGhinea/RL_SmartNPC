@@ -1,4 +1,4 @@
-package ro.smartnpc.commands.agent;
+package ro.smartnpc.commands.debug.environment;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -6,29 +6,26 @@ import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ro.smartnpc.commands.CommandRoute;
-import ro.smartnpc.commands.agent.routes.ActionRoute;
-import ro.smartnpc.commands.agent.routes.SpawnRoute;
-import ro.smartnpc.commands.environment.routes.InitRoute;
+import ro.smartnpc.commands.debug.environment.routes.InitRoute;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AgentCmd implements TabExecutor {
+public class EnvironmentDebugCmd implements TabExecutor {
 
     Map<String, CommandRoute> routes = new HashMap<>() {{
-        put("spawn", new SpawnRoute());
-        put("action", new ActionRoute());
+        put("init", new InitRoute());
     }};
 
-    private AgentCmd() {}
+    private EnvironmentDebugCmd() {}
 
-    private static AgentCmd instance;
+    private static EnvironmentDebugCmd instance;
 
-    public static synchronized AgentCmd getInstance() {
+    public static synchronized EnvironmentDebugCmd getInstance() {
         if (instance == null) {
-            instance = new AgentCmd();
+            instance = new EnvironmentDebugCmd();
         }
 
         return instance;

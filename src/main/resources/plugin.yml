@@ -20,3 +20,9 @@ commands:
   smartnpc_agent:
     description: SmartNPC agent commands
     aliases: [snpc_agent]
+  smartnpc_environment_debug:
+    description: SmartNPC environment commands debug
+    aliases: [ snpc_env_debug ]
+  smartnpc_agent_debug:
+    description: SmartNPC agent commands debug
+    aliases: [ snpc_agent_debug ]
