@@ -3,6 +3,7 @@ package ro.smartnpc.commands;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
+import ro.smartnpc.commands.agent.AgentCmd;
 import ro.smartnpc.commands.debug.agent.AgentDebugCmd;
 import ro.smartnpc.commands.debug.environment.EnvironmentDebugCmd;
 import ro.smartnpc.commands.environment.EnvironmentCmd;
@@ -20,6 +21,7 @@ public class CommandsLoader {
     public static void init(){
         associate("smartnpc_world", WorldCmd.getInstance());
         associate("smartnpc_environment", EnvironmentCmd.getInstance());
+        associate("smartnpc_agent", AgentCmd.getInstance());
 
         associate("smartnpc_environment_debug", EnvironmentDebugCmd.getInstance());
         associate("smartnpc_agent_debug", AgentDebugCmd.getInstance());

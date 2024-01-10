@@ -24,3 +24,6 @@ hs_err_pid*
 replay_pid*
 /target/
 /ProjectServer/logs/
+/ProjectServer/agents/
+/ProjectServer/plugins/FastAsyncWorldEdit/clipboard/
+/ProjectServer/plugins/FastAsyncWorldEdit/history/movement/a233eb4b-4cab-42cd-9fd9-7e7b9a3f74be/

@@ -31,13 +31,36 @@ public class TestAlgorithm implements Algorithm{
     }
 
     @Override
-    public void step() {
+    public boolean step() {
         Action action = randomSelectAction();
         action.execute(environmentNPC);
+        return true;
     }
 
     @Override
     public void setEnvironmentNPC(EnvironmentNPC npc) {
         environmentNPC = npc;
+    }
+
+    @Override
+    public void train(int numberOfEpisodes, int numberOfStepsPerEpisode) {
+        for (int i = 0; i < numberOfEpisodes; i++) {
+            runEpisode(numberOfStepsPerEpisode);
+        }
+    }
+
+    @Override
+    public void forceStopTesting() {
+
+    }
+
+    @Override
+    public void test() {
+
+    }
+
+    @Override
+    public void reset() {
+
     }
 }

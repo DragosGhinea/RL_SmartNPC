@@ -1,10 +1,13 @@
 package ro.smartnpc.environment;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import ro.smartnpc.SmartNPC;
+import ro.smartnpc.algorithms.QLearningAlgorithm;
 import ro.smartnpc.algorithms.TestAlgorithm;
 import ro.smartnpc.npc.EnvironmentNPC;
 import ro.smartnpc.npc.actions.Action;
@@ -32,6 +35,7 @@ public class Environment {
             new ActionBackward()
     );
 
+    private Location target;
     private EnvironmentWorld environmentWorld;
     private List<EnvironmentNPC> agents;
 
@@ -44,7 +48,7 @@ public class Environment {
 
     public void registerAgents(int numberOfAgents) {
         for (int i = 0; i < numberOfAgents; i++)
-            agents.add(new EnvironmentNPC(this, new TestAlgorithm()));
+            agents.add(new EnvironmentNPC("Agent"+i, this, new QLearningAlgorithm()));
     }
 
     public CompletableFuture<World> init(){
@@ -73,6 +77,9 @@ public class Environment {
     }
 
     public void reset(){
+        if (autoStepTask != null && !autoStepTask.isCancelled())
+            autoStepTask.cancel();
+
         for (EnvironmentNPC agent : agents) {
             agent.getNPC().teleport(environmentWorld.getWorld().getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
@@ -84,25 +91,39 @@ public class Environment {
         }
     }
 
-    private boolean isAutoStepping = false;
+    private BukkitTask autoStepTask;
     public void autoStep(int numberOfSteps) {
-        if (isAutoStepping)
+        if (autoStepTask != null && !autoStepTask.isCancelled())
             return;
 
-        isAutoStepping = true;
-        new BukkitRunnable() {
+        autoStepTask = new BukkitRunnable() {
             int steps = 0;
             @Override
             public void run() {
                 if (steps >= numberOfSteps) {
                     cancel();
-                    isAutoStepping = false;
                     return;
                 }
                 step();
                 steps++;
             }
-        }.runTaskTimer(SmartNPC.getInstance(), 0, 5);
+        }.runTaskTimerAsynchronously(SmartNPC.getInstance(), 0, 3);
+    }
+
+    public void train(int numberOfEpisodes, int numberOfSteps) {
+        for (EnvironmentNPC agent : agents) {
+            Bukkit.getScheduler().runTaskAsynchronously(SmartNPC.getInstance(), () -> {
+                agent.getAlgorithm().train(numberOfEpisodes, numberOfSteps);
+            });
+        }
+    }
+
+    public Location getTarget() {
+        return target;
+    }
+
+    public void setTarget(Location target) {
+        this.target = target;
     }
 
     public EnvironmentWorld getEnvironmentWorld() {
@@ -111,5 +132,13 @@ public class Environment {
 
     public List<EnvironmentNPC> getAgents() {
         return agents;
+    }
+
+    public EnvironmentNPC getAgentByName(String name) {
+        for (EnvironmentNPC agent : agents) {
+            if (agent.getName().equals(name))
+                return agent;
+        }
+        return null;
     }
 }

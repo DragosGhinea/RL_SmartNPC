@@ -10,11 +10,14 @@ public class EnvironmentNPC {
 
     NPC npc;
 
+    private String name;
+
     private final Environment environment;
 
     private final Algorithm algorithm;
 
-    public EnvironmentNPC(Environment environment, Algorithm algorithm) {
+    public EnvironmentNPC(String name, Environment environment, Algorithm algorithm) {
+        this.name = name;
         this.environment = environment;
         this.algorithm = algorithm;
         algorithm.setEnvironmentNPC(this);
@@ -28,11 +31,15 @@ public class EnvironmentNPC {
         if (this.npc != null)
             return npc;
 
-        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "Agent");
+        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, name);
         npc.spawn(environment.getEnvironmentWorld().getWorld().getSpawnLocation());
 
         this.npc = npc;
         return npc;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public NPC getNPC() {
@@ -43,5 +50,8 @@ public class EnvironmentNPC {
         if (npc == null)
             return createAgentNpc();
         return npc;
+    }
+    public Environment getEnvironment() {
+        return environment;
     }
 }

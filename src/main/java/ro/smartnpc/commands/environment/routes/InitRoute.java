@@ -36,6 +36,8 @@ public class InitRoute implements CommandRoute {
                 throwable.printStackTrace();
             }
 
+            environment.setTarget(environmentWorld.getWorld().getSpawnLocation().clone().add(0, 0, 36));
+
             sender.sendMessage("§aTeleporting to world...");
 
             Bukkit.getScheduler().runTask(SmartNPC.getInstance(), () -> {
