@@ -121,7 +121,14 @@ public class QLearningAlgorithm implements Algorithm{
         State currentState = processState();
         if (reachedTarget(currentState))
             return false;
-        int action = testing ? getAction(currentState) : epsilonGreedyPolicy(currentState);
+
+        if (testing) {
+            int action = getAction(currentState);
+            takeAction(currentState, action);
+            return true;
+        }
+
+        int action = epsilonGreedyPolicy(currentState);
         //SmartNPC.getInstance().getLogger().info("Current State: "+currentState);
         State nextState = takeAction(currentState, action);
         //SmartNPC.getInstance().getLogger().info("Next State: "+nextState);
