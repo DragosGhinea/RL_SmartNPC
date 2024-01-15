@@ -29,23 +29,38 @@ public class RelativeCoordinatesState implements State, Serializable {
 
     @Override
     public boolean isFinalState(EnvironmentNPC environmentNPC) {
-        if (x >= 2)
+        if (Math.abs(x) >= 2)
             return false;
 
-        if (y >= 2)
+        if (Math.abs(y) >= 2)
             return false;
 
-        if (z >= 2)
+        if (Math.abs(z) >= 2)
             return false;
 
         return true;
     }
 
     @Override
-    public double getReward(EnvironmentNPC environmentNPC) {
+    public double getReward(State previousState, EnvironmentNPC environmentNPC) {
+        if (!(previousState instanceof RelativeCoordinatesState previousStateCasted)) {
+            throw new IllegalArgumentException("Previous state must be of type RelativeCoordinatesState");
+        }
+
+        double reward = 0.0;
+
         long distanceToTarget = (long) x * x + (long) y * y + (long) z * z;
-        double rewardDistance = -0.01 * distanceToTarget;
-        return rewardDistance;
+        reward += -0.01 * distanceToTarget;
+
+        if (Math.abs(previousStateCasted.x) < Math.abs(x)) {
+            reward -= 1;
+        }
+
+        if (Math.abs(previousStateCasted.z) < Math.abs(z)) {
+            reward -= 1;
+        }
+
+        return reward;
     }
 
     @Override

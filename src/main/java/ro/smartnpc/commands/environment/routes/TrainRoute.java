@@ -1,6 +1,8 @@
 package ro.smartnpc.commands.environment.routes;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import ro.smartnpc.SmartNPC;
 import ro.smartnpc.commands.CommandRoute;
 import ro.smartnpc.environment.Environment;
 
@@ -49,8 +51,10 @@ public class TrainRoute implements CommandRoute {
 
         final Environment environment = Environment.getRunningInstance();
 
-        environment.train(episodes, steps);
-        environment.saveAgentsToFolder("agents");
+        Bukkit.getScheduler().runTaskAsynchronously(SmartNPC.getInstance(), () -> {
+            environment.train(episodes, steps);
+            environment.saveAgentsToFolder("agents");
+        });
 
         return false;
     }

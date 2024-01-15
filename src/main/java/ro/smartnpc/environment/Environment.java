@@ -82,11 +82,30 @@ public class Environment {
     }
 
     public void train(int numberOfEpisodes, int numberOfSteps) {
+//        for (EnvironmentNPC agent : agents) {
+//            Bukkit.getScheduler().runTaskAsynchronously(SmartNPC.getInstance(), () -> {
+//                agent.getAlgorithm().train(numberOfEpisodes, numberOfSteps);
+//            });
+//        }
+
+        List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
+
         for (EnvironmentNPC agent : agents) {
+            CompletableFuture<Void> future = new CompletableFuture<>();
+
             Bukkit.getScheduler().runTaskAsynchronously(SmartNPC.getInstance(), () -> {
                 agent.getAlgorithm().train(numberOfEpisodes, numberOfSteps);
+                future.complete(null);
             });
+
+            completableFutures.add(future);
         }
+
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(
+                completableFutures.toArray(new CompletableFuture[0])
+        );
+
+        allOf.join();
     }
 
     public void forceStopTraining() {

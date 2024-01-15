@@ -27,5 +27,9 @@ public interface Algorithm {
 
     void saveCurrentData(File whereToSave);
 
+    void loadCurrentData(File fromWhereToLoad);
+
+    double getScore();
+
     void destroy();
 }

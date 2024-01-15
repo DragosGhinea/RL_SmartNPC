@@ -48,7 +48,7 @@ public class Utils {
             folder.mkdirs();
         }
 
-        serialize(Q, new File(folderPath + File.pathSeparator + name + ".ser"));
+        serialize(Q, new File(folderPath + File.separator + name + ".ser"));
     }
 
     public static void serialize(Map<State, Map<Integer, Double>> Q, File whereToSave) {
@@ -61,6 +61,20 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Map<State, Map<Integer, Double>> deserializeQ(File fromWhere) {
+        try {
+            FileInputStream fileIn = new FileInputStream(fromWhere);
+            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+            Map<State, Map<Integer, Double>> deserializedQ = (Map<State, Map<Integer, Double>>) objectIn.readObject();
+            objectIn.close();
+            fileIn.close();
+            return deserializedQ;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static void deserializeAndWrite(String name) {

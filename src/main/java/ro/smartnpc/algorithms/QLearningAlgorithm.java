@@ -37,6 +37,8 @@ public class QLearningAlgorithm implements Algorithm {
 
     private EnvironmentNPC environmentNPC;
 
+    private double score = 0.0;
+
     @Override
     public void setEnvironmentNPC(EnvironmentNPC npc) {
         environmentNPC = npc;
@@ -52,10 +54,10 @@ public class QLearningAlgorithm implements Algorithm {
         }
     }
 
-    private int getAction(State state) {
+    private int getActionTesting(State state) {
         Map<Integer, Double> actionValues = Q.get(state);
         if (actionValues == null) {
-            return getRandomAction();
+            return -1;
         } else {
             return argmaxAction(actionValues);
         }
@@ -100,8 +102,8 @@ public class QLearningAlgorithm implements Algorithm {
         return processState();
     }
 
-    private double getReward(State state) {
-        return state.getReward(environmentNPC);
+    private double getReward(State previousState, State state) {
+        return state.getReward(previousState, environmentNPC);
     }
 
     private void updateQValue(State state, int action, double reward, State nextState) {
@@ -137,7 +139,11 @@ public class QLearningAlgorithm implements Algorithm {
             return false;
 
         if (testing) {
-            int action = getAction(currentState);
+            int action = getActionTesting(currentState);
+            if (action == -1) {
+                SmartNPC.getInstance().getLogger().info("No action found for state " + currentState);
+                return false;
+            }
             takeAction(currentState, action);
             return true;
         }
@@ -145,7 +151,7 @@ public class QLearningAlgorithm implements Algorithm {
         int action = epsilonGreedyPolicy(currentState);
         State nextState = takeAction(currentState, action);
 
-        double reward = getReward(nextState);
+        double reward = getReward(currentState, nextState);
 
         totalReward += reward;
         // Q-learning update rule
@@ -170,10 +176,23 @@ public class QLearningAlgorithm implements Algorithm {
     @Override
     public void reset() {
         totalReward = 0.0;
+        CompletableFuture<Void> future = new CompletableFuture<>();
         Bukkit.getScheduler().runTask(SmartNPC.getInstance(), () -> {
-            environmentNPC.getNPC().teleport(environmentNPC.getEnvironment().getEnvironmentWorld().getWorld().getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-            environmentNPC.getNPC().getNavigator().cancelNavigation();
+            try {
+                environmentNPC.getNPC().teleport(environmentNPC.getEnvironment().getEnvironmentWorld().getWorld().getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                environmentNPC.getNPC().getNavigator().cancelNavigation();
+            }catch(Exception x){
+                x.printStackTrace();
+            }
+
+            future.complete(null);
         });
+
+        try {
+            future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private boolean forceStopTraining = false;
@@ -182,15 +201,20 @@ public class QLearningAlgorithm implements Algorithm {
     public void train(int numberOfEpisodes, int numberOfStepsPerEpisode) {
         forceStopTraining = false;
 
+        double trainingScore = 0;
         for (int i = 0; i < numberOfEpisodes; i++) {
             runEpisode(numberOfStepsPerEpisode);
             if (forceStopTraining) {
                 break;
             }
 
-            SmartNPC.getInstance().getLogger().info("[" + environmentNPC.getName() + "] Reward average episode " + i + ": " + (totalReward / numberOfStepsPerEpisode));
+            double episodeReward = totalReward / numberOfStepsPerEpisode;
+            SmartNPC.getInstance().getLogger().info("[" + environmentNPC.getName() + "] Reward average episode " + i + ": " + (episodeReward));
+            trainingScore += episodeReward;
             reset();
         }
+
+        score += trainingScore / numberOfEpisodes;
     }
 
     @Override
@@ -231,5 +255,18 @@ public class QLearningAlgorithm implements Algorithm {
     @Override
     public void saveCurrentData(File whereToSave) {
         Utils.serialize(Q, whereToSave);
+    }
+
+    @Override
+    public void loadCurrentData(File fromWhereToLoad) {
+        score = 0;
+        Q = Utils.deserializeQ(fromWhereToLoad);
+        if (Q == null)
+            Q = new HashMap<>();
+    }
+
+    @Override
+    public double getScore() {
+        return score;
     }
 }

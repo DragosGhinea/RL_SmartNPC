@@ -6,5 +6,5 @@ public interface State {
 
     boolean isFinalState(EnvironmentNPC environmentNPC);
 
-    double getReward(EnvironmentNPC environmentNPC);
+    double getReward(State previousState, EnvironmentNPC environmentNPC);
 }
