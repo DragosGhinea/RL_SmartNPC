@@ -3,19 +3,11 @@ package ro.smartnpc.environment;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import ro.smartnpc.SmartNPC;
 import ro.smartnpc.algorithms.QLearningAlgorithm;
-import ro.smartnpc.algorithms.TestAlgorithm;
 import ro.smartnpc.npc.EnvironmentNPC;
-import ro.smartnpc.npc.actions.Action;
-import ro.smartnpc.npc.actions.movement.ActionBackward;
-import ro.smartnpc.npc.actions.movement.ActionForward;
-import ro.smartnpc.npc.actions.movement.ActionLeft;
-import ro.smartnpc.npc.actions.movement.ActionRight;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -27,13 +19,6 @@ public class Environment {
     public static Environment getRunningInstance() {
         return instance;
     }
-
-    public static List<Action> actionList = List.of(
-            new ActionLeft(),
-            new ActionRight(),
-            new ActionForward(),
-            new ActionBackward()
-    );
 
     private Location target;
     private EnvironmentWorld environmentWorld;
@@ -49,6 +34,14 @@ public class Environment {
     public void registerAgents(int numberOfAgents) {
         for (int i = 0; i < numberOfAgents; i++)
             agents.add(new EnvironmentNPC("Agent"+i, this, new QLearningAlgorithm()));
+    }
+
+    public void unload() {
+        for (EnvironmentNPC agent : agents) {
+            agent.destroy();
+        }
+        environmentWorld.unloadWorld();
+        instance = null;
     }
 
     public CompletableFuture<World> init(){
@@ -77,11 +70,8 @@ public class Environment {
     }
 
     public void reset(){
-        if (autoStepTask != null && !autoStepTask.isCancelled())
-            autoStepTask.cancel();
-
         for (EnvironmentNPC agent : agents) {
-            agent.getNPC().teleport(environmentWorld.getWorld().getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            agent.getAlgorithm().reset();
         }
     }
 
@@ -91,30 +81,31 @@ public class Environment {
         }
     }
 
-    private BukkitTask autoStepTask;
-    public void autoStep(int numberOfSteps) {
-        if (autoStepTask != null && !autoStepTask.isCancelled())
-            return;
-
-        autoStepTask = new BukkitRunnable() {
-            int steps = 0;
-            @Override
-            public void run() {
-                if (steps >= numberOfSteps) {
-                    cancel();
-                    return;
-                }
-                step();
-                steps++;
-            }
-        }.runTaskTimerAsynchronously(SmartNPC.getInstance(), 0, 3);
-    }
-
     public void train(int numberOfEpisodes, int numberOfSteps) {
         for (EnvironmentNPC agent : agents) {
             Bukkit.getScheduler().runTaskAsynchronously(SmartNPC.getInstance(), () -> {
                 agent.getAlgorithm().train(numberOfEpisodes, numberOfSteps);
             });
+        }
+    }
+
+    public void forceStopTraining() {
+        for (EnvironmentNPC agent : agents) {
+            Bukkit.getScheduler().runTaskAsynchronously(SmartNPC.getInstance(), () -> {
+                agent.getAlgorithm().forceStopTraining();
+            });
+        }
+    }
+
+    public void saveAgentsToFolder(String folderName) {
+        File folder = new File(folderName);
+
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+        for (EnvironmentNPC agent : agents) {
+            agent.getAlgorithm().saveCurrentData(new File(folder, agent.getName() + ".ser"));
         }
     }
 

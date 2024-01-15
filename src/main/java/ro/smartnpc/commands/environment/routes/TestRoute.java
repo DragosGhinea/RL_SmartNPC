@@ -10,6 +10,11 @@ import ro.smartnpc.npc.EnvironmentNPC;
 public class TestRoute implements CommandRoute {
     @Override
     public boolean onCommand(CommandSender sender, String[] args) {
+        if (Environment.getRunningInstance() == null) {
+            sender.sendMessage("§cEnvironment not running!");
+            return false;
+        }
+
         if (args.length < 2) {
             sender.sendMessage("§cNot enough arguments! Specify number of episodes and steps");
             return false;

@@ -2,6 +2,8 @@ package ro.smartnpc.algorithms;
 
 import ro.smartnpc.npc.EnvironmentNPC;
 
+import java.io.File;
+
 public interface Algorithm {
 
     void setEnvironmentNPC(EnvironmentNPC npc);
@@ -17,14 +19,13 @@ public interface Algorithm {
 
     void forceStopTesting();
 
-    default void runEpisode(int numberOfSteps) {
-        for (int i = 0; i < numberOfSteps; i++)
-            step();
-
-        reset();
-    }
+    void runEpisode(int numberOfSteps);
 
     void train(int numberOfEpisodes, int numberOfStepsPerEpisode);
 
+    void forceStopTraining();
 
+    void saveCurrentData(File whereToSave);
+
+    void destroy();
 }

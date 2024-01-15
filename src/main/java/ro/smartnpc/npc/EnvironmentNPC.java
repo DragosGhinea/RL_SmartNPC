@@ -3,6 +3,7 @@ package ro.smartnpc.npc;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.EntityType;
+import ro.smartnpc.SmartNPC;
 import ro.smartnpc.algorithms.Algorithm;
 import ro.smartnpc.environment.Environment;
 
@@ -33,6 +34,12 @@ public class EnvironmentNPC {
 
         NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, name);
         npc.spawn(environment.getEnvironmentWorld().getWorld().getSpawnLocation());
+        npc.getEntity().setVelocity(npc.getEntity().getVelocity().zero());
+        npc.getNavigator().getLocalParameters()
+                .distanceMargin(0.5)
+                .baseSpeed(5f)
+                .stationaryTicks(2)
+                .speedModifier(4f);
 
         this.npc = npc;
         return npc;
@@ -53,5 +60,10 @@ public class EnvironmentNPC {
     }
     public Environment getEnvironment() {
         return environment;
+    }
+
+    public void destroy() {
+        algorithm.destroy();
+        npc.destroy();
     }
 }

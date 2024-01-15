@@ -2,6 +2,7 @@ package ro.smartnpc.environment;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import ro.smartnpc.SmartNPC;
 import ro.smartnpc.map.Schematic;
 import ro.smartnpc.map.SchematicUtils;
@@ -26,6 +27,20 @@ public class EnvironmentWorld {
 
         Bukkit.getScheduler().runTaskAsynchronously(SmartNPC.getInstance(), () -> {
             schematicLoaded = SchematicUtils.loadSchematic(schematic, world.getSpawnLocation());
+        });
+    }
+
+    public void unloadWorld() {
+        if (world == null)
+            return;
+
+        Bukkit.getScheduler().runTask(SmartNPC.getInstance(), () -> {
+            for (Player p : world.getPlayers()) {
+                p.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+            }
+
+            Bukkit.getServer().unloadWorld(world, false);
+            world = null;
         });
     }
 

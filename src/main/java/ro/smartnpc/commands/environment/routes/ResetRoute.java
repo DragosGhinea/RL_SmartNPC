@@ -7,6 +7,11 @@ import ro.smartnpc.environment.Environment;
 public class ResetRoute implements CommandRoute {
     @Override
     public boolean onCommand(CommandSender sender, String[] args) {
+        if(Environment.getRunningInstance() == null) {
+            sender.sendMessage("§cEnvironment not running!");
+            return false;
+        }
+
         sender.sendMessage("§aReset the environment...");
 
         final Environment environment = Environment.getRunningInstance();

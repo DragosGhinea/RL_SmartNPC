@@ -19,10 +19,10 @@ public class EnvironmentCmd implements TabExecutor {
         put("init", new InitRoute());
         put("step", new StepRoute());
         put("reset", new ResetRoute());
-        put("autostep", new AutoStepRoute());
         put("debug", new DebugRoute());
         put("train", new TrainRoute());
         put("test", new TestRoute());
+        put("unload", new UnloadRoute());
     }};
 
     private EnvironmentCmd() {}

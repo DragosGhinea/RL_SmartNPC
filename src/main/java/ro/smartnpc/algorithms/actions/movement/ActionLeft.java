@@ -1,28 +1,90 @@
 package ro.smartnpc.algorithms.actions.movement;
 
+import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
+import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.util.Vector;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import ro.smartnpc.SmartNPC;
 import ro.smartnpc.algorithms.actions.Action;
 import ro.smartnpc.algorithms.actions.ActionType;
 import ro.smartnpc.npc.EnvironmentNPC;
 
-public class ActionLeft implements Action {
+import java.util.concurrent.CompletableFuture;
 
-        @Override
-        public ActionType getActionType() {
-            return ActionType.MOVE_LEFT;
+public class ActionLeft implements Action, Listener {
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.MOVE_LEFT;
+    }
+
+    public ActionLeft() {
+        Bukkit.getPluginManager().registerEvents(this, SmartNPC.getInstance());
+    }
+
+    private CompletableFuture<Void> awaitingToComplete = null;
+    private EnvironmentNPC envNPC = null;
+
+    @EventHandler
+    public void onNPCMove(NavigationCompleteEvent event) {
+        if (envNPC == null)
+            return;
+
+        if (!event.getNPC().equals(envNPC.getNPC()))
+            return;
+
+        if (awaitingToComplete != null) {
+            awaitingToComplete.complete(null);
+            awaitingToComplete = null;
+            envNPC = null;
+        }
+    }
+
+    @EventHandler
+    public void onNPCCancelMove(NavigationCancelEvent event) {
+        if (envNPC == null)
+            return;
+
+        if (!event.getNPC().equals(envNPC.getNPC()))
+            return;
+
+        if (awaitingToComplete != null) {
+            awaitingToComplete.complete(null);
+            awaitingToComplete = null;
+            envNPC = null;
+        }
+    }
+
+    @Override
+    public CompletableFuture<Void> execute(EnvironmentNPC envNPC) {
+        NPC npc = envNPC.getNPC();
+        Entity entity = npc.getEntity();
+        entity.setRotation(entity.getLocation().getYaw() - 90, entity.getLocation().getPitch());
+
+        Location target = MovementUtil.getFacingLocation(entity, 1);
+        if (MovementUtil.canNavigateTo(envNPC, target)) {
+            npc.getNavigator().setStraightLineTarget(target);
+            awaitingToComplete = new CompletableFuture<>();
+            this.envNPC = envNPC;
+            return awaitingToComplete;
         }
 
-        @Override
-        public void execute(EnvironmentNPC envNPC) {
-            NPC npc = envNPC.getNPC();
-            Vector direction = npc.getEntity().getLocation().getDirection();
-            Vector leftDirection = new Vector(direction.getZ(), direction.getY(), -direction.getX());
+        return CompletableFuture.completedFuture(null);
+    }
 
-            Entity entity = npc.getEntity();
-            entity.setVelocity(entity.getVelocity().add(leftDirection.multiply(0.5)));
-
-            entity.setRotation(entity.getLocation().getYaw() - 90, entity.getLocation().getPitch());
+    @Override
+    public void destroy() {
+        if (awaitingToComplete != null) {
+            awaitingToComplete.cancel(true);
+            awaitingToComplete = null;
+            envNPC = null;
         }
+
+        HandlerList.unregisterAll(this);
+    }
 }

@@ -7,6 +7,23 @@ import ro.smartnpc.environment.Environment;
 public class TrainRoute implements CommandRoute {
     @Override
     public boolean onCommand(CommandSender sender, String[] args) {
+        if (Environment.getRunningInstance() == null) {
+            sender.sendMessage("§cEnvironment not running!");
+            return false;
+        }
+
+        if (args.length < 2) {
+            sender.sendMessage("§cNot enough arguments! Specify number of episodes and steps");
+            return false;
+        }
+
+        if (args[1].equals("stop")) {
+            sender.sendMessage("§aIf training is running, it will be stopped.");
+            final Environment environment = Environment.getRunningInstance();
+            environment.forceStopTraining();
+            return false;
+        }
+
         if (args.length < 3) {
             sender.sendMessage("§cNot enough arguments! Specify number of episodes and steps");
             return false;
@@ -33,6 +50,7 @@ public class TrainRoute implements CommandRoute {
         final Environment environment = Environment.getRunningInstance();
 
         environment.train(episodes, steps);
+        environment.saveAgentsToFolder("agents");
 
         return false;
     }

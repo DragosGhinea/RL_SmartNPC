@@ -12,6 +12,11 @@ import ro.smartnpc.map.Schematic;
 public class InitRoute implements CommandRoute {
     @Override
     public boolean onCommand(CommandSender sender, String[] args) {
+        if (Environment.getRunningInstance() != null) {
+            sender.sendMessage("§cEnvironment already running! If you want to reset, unload it first!");
+            return false;
+        }
+
         if (args.length < 2) {
             sender.sendMessage("§cNot enough arguments! Specify number of agents");
             return false;
