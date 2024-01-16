@@ -5,10 +5,14 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import ro.smartnpc.SmartNPC;
 import ro.smartnpc.Utils;
 import ro.smartnpc.algorithms.actions.Action;
-import ro.smartnpc.algorithms.actions.movement.ActionBackward;
-import ro.smartnpc.algorithms.actions.movement.ActionForward;
-import ro.smartnpc.algorithms.actions.movement.ActionLeft;
-import ro.smartnpc.algorithms.actions.movement.ActionRight;
+//import ro.smartnpc.algorithms.actions.movement.walk.ActionBackward;
+//import ro.smartnpc.algorithms.actions.movement.walk.ActionForward;
+//import ro.smartnpc.algorithms.actions.movement.walk.ActionLeft;
+//import ro.smartnpc.algorithms.actions.movement.walk.ActionRight;
+import ro.smartnpc.algorithms.actions.movement.teleport.ActionBackward;
+import ro.smartnpc.algorithms.actions.movement.teleport.ActionForward;
+import ro.smartnpc.algorithms.actions.movement.teleport.ActionLeft;
+import ro.smartnpc.algorithms.actions.movement.teleport.ActionRight;
 import ro.smartnpc.algorithms.states.RelativeCoordinatesState;
 import ro.smartnpc.algorithms.states.State;
 import ro.smartnpc.npc.EnvironmentNPC;
@@ -29,11 +33,15 @@ public class QLearningAlgorithm implements Algorithm {
             add(new ActionRight());
         }
     };
-    private static final double ALPHA = 0.1;  // Learning rate
+    private static final double ALPHA = 0.5;  // Learning rate
     private static final double GAMMA = 0.9;  // Discount factor
     private static final double EPSILON = 0.1;  // Exploration-exploitation trade-off
 
     private Map<State, Map<Integer, Double>> Q = new HashMap<>();
+
+    public Object getData(){
+        return Q;
+    }
 
     private EnvironmentNPC environmentNPC;
 
@@ -150,6 +158,7 @@ public class QLearningAlgorithm implements Algorithm {
 
         int action = epsilonGreedyPolicy(currentState);
         State nextState = takeAction(currentState, action);
+        //SmartNPC.getInstance().getLogger().info("Next State: " + nextState);
 
         double reward = getReward(currentState, nextState);
 

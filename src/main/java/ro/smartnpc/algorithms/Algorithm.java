@@ -31,5 +31,7 @@ public interface Algorithm {
 
     double getScore();
 
+    Object getData();
+
     void destroy();
 }

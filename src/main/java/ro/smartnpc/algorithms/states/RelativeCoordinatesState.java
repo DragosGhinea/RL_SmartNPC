@@ -13,11 +13,27 @@ public class RelativeCoordinatesState implements State, Serializable {
     private final int y;
     private final int z;
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getZ() {
+        return z;
+    }
+
     // 0 - facing target
     // 1 - target is on the left
     // 2 - target is on the right
     // 3 - target is behind
     private final int direction;
+
+    public int getDirection() {
+        return direction;
+    }
 
     public RelativeCoordinatesState(Location source, Location target) {
         x = target.getBlockX() - source.getBlockX();
@@ -47,18 +63,22 @@ public class RelativeCoordinatesState implements State, Serializable {
             throw new IllegalArgumentException("Previous state must be of type RelativeCoordinatesState");
         }
 
+        if (isFinalState(environmentNPC)) {
+            return 100;
+        }
+
         double reward = 0.0;
 
-        long distanceToTarget = (long) x * x + (long) y * y + (long) z * z;
+        long distanceToTarget = (long) x * x + (long) z * z; //fara y momentan
         reward += -0.01 * distanceToTarget;
 
-        if (Math.abs(previousStateCasted.x) < Math.abs(x)) {
-            reward -= 1;
-        }
+        long distanceToTargetPreviousState = (long) previousStateCasted.x * previousStateCasted.x + (long) previousStateCasted.z * previousStateCasted.z; //fara y momentan
 
-        if (Math.abs(previousStateCasted.z) < Math.abs(z)) {
+        if (distanceToTargetPreviousState < distanceToTarget)
             reward -= 1;
-        }
+
+        if (previousStateCasted.x == x && previousStateCasted.z == z)
+            reward -= 5;
 
         return reward;
     }

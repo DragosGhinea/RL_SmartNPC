@@ -24,6 +24,8 @@ public class EnvironmentCmd implements TabExecutor {
         put("test", new TestRoute());
         put("unload", new UnloadRoute());
         put("genetic", new GeneticRoute());
+        put("showStates", new ShowStatesRoute());
+        put("loadData", new LoadDataRoute());
     }};
 
     private EnvironmentCmd() {}

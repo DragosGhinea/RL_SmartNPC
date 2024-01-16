@@ -1,4 +1,4 @@
-package ro.smartnpc.algorithms.actions.movement;
+package ro.smartnpc.algorithms.actions.movement.walk;
 
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
@@ -9,22 +9,22 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.util.Vector;
 import ro.smartnpc.SmartNPC;
 import ro.smartnpc.algorithms.actions.Action;
 import ro.smartnpc.algorithms.actions.ActionType;
+import ro.smartnpc.algorithms.actions.movement.MovementUtil;
 import ro.smartnpc.npc.EnvironmentNPC;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ActionRight implements Action, Listener {
+public class ActionLeft implements Action, Listener {
 
     @Override
     public ActionType getActionType() {
-        return ActionType.MOVE_RIGHT;
+        return ActionType.MOVE_LEFT;
     }
 
-    public ActionRight() {
+    public ActionLeft() {
         Bukkit.getPluginManager().registerEvents(this, SmartNPC.getInstance());
     }
 
@@ -65,7 +65,7 @@ public class ActionRight implements Action, Listener {
     public CompletableFuture<Void> execute(EnvironmentNPC envNPC) {
         NPC npc = envNPC.getNPC();
         Entity entity = npc.getEntity();
-        entity.setRotation(entity.getLocation().getYaw() + 90, entity.getLocation().getPitch());
+        entity.setRotation(entity.getLocation().getYaw() - 90, entity.getLocation().getPitch());
 
         Location target = MovementUtil.getFacingLocation(entity, 1);
         if (MovementUtil.canNavigateTo(envNPC, target)) {
@@ -81,7 +81,7 @@ public class ActionRight implements Action, Listener {
     @Override
     public void destroy() {
         if (awaitingToComplete != null) {
-            awaitingToComplete.complete(null);
+            awaitingToComplete.cancel(true);
             awaitingToComplete = null;
             envNPC = null;
         }

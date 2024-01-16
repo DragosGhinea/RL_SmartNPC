@@ -8,11 +8,11 @@ import ro.smartnpc.npc.EnvironmentNPC;
 public class MovementUtil {
 
     public static boolean canNavigateTo(EnvironmentNPC envNPC, Location target) {
-//        if (target.getBlock().isSolid())
-//            return false;
-//
-//        if (target.getBlock().getRelative(BlockFace.UP).isSolid())
-//            return false;
+        if (target.getBlock().isSolid())
+            return false;
+
+        if (target.getBlock().getRelative(BlockFace.UP).isSolid())
+            return false;
 
         return true;
     }
