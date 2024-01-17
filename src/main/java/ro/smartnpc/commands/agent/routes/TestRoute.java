@@ -1,4 +1,4 @@
-package ro.smartnpc.commands.environment.routes;
+package ro.smartnpc.commands.agent.routes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;

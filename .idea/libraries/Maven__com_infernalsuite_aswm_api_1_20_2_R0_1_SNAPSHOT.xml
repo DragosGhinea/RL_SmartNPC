@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: com.infernalsuite.aswm:api:1.20.2-R0.1-SNAPSHOT">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/infernalsuite/aswm/api/1.20.2-R0.1-SNAPSHOT/api-1.20.2-R0.1-20231025.170435-3.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/infernalsuite/aswm/api/1.20.2-R0.1-SNAPSHOT/api-1.20.2-R0.1-20240107.171416-21.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/com/infernalsuite/aswm/api/1.20.2-R0.1-SNAPSHOT/api-1.20.2-R0.1-20231025.170435-3-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/infernalsuite/aswm/api/1.20.2-R0.1-SNAPSHOT/api-1.20.2-R0.1-20240107.171416-21-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/infernalsuite/aswm/api/1.20.2-R0.1-SNAPSHOT/api-1.20.2-R0.1-20231025.170435-3-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/infernalsuite/aswm/api/1.20.2-R0.1-SNAPSHOT/api-1.20.2-R0.1-20240107.171416-21-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

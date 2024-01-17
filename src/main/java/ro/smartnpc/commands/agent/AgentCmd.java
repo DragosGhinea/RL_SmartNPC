@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ro.smartnpc.commands.CommandRoute;
 import ro.smartnpc.commands.agent.routes.DeserializeRoute;
+import ro.smartnpc.commands.agent.routes.LoadDataRoute;
+import ro.smartnpc.commands.agent.routes.ShowStatesRoute;
+import ro.smartnpc.commands.agent.routes.TestRoute;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,6 +20,9 @@ public class AgentCmd implements TabExecutor {
 
     Map<String, CommandRoute> routes = new HashMap<>() {{
         put("deserialize", new DeserializeRoute());
+        put("load", new LoadDataRoute());
+        put("showStates", new ShowStatesRoute());
+        put("test", new TestRoute());
     }};
 
     private AgentCmd() {}
