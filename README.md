@@ -154,11 +154,13 @@ We chose a small value for the learning rate to encourage the agent to learn mor
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image1.png)
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image2.png)
+
 _Highest score over iterations for alpha = 0.1, gamma = 0.99 and epsilon = 0.1_
 
 Here we used 5 generations, each one with 10 epochs and 500 steps per epoch. As you can see, we haven’t got such great scores.
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image3.png)
+
 _Evolution of Agent 3 over the training_
 
 The above figure shows that based on this approach, the best agent that we had over the training reaches the target only a few times. Moreover, it is evident that the graph exhibits slow or insufficient convergence.
@@ -167,9 +169,11 @@ The above figure shows that based on this approach, the best agent that we had o
 In the second approach we used a higher learning rate, this time equal to 0.5.
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image4.png)
+
 _Highest score over iterations for alpha = 0.5, gamma = 0.99 and epsilon = 0.1_
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image5.png)
+
 _Evolution of Agent 3 over the training_
 
 Here we kept the initial structure, and used  5 generations, each one with 10 epochs and 500 steps per epoch. As you can see from the figures above, using a higher learning rate, our best agent reaches the target several times, and also the overall score increases quicker and more uniformly.
@@ -184,22 +188,27 @@ For this solution, I set an initial learning rate equal to 0.6 and in each new e
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image6.png)
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image7.png)
+
 _Snippet of code for the implementation_
 
 To see if the agents can improve their scores over time, for the next figures we used 40 generations, each one with 25 epochs and 500 steps per epoch. As you can see, the agents reached a plateau and could not achieve a higher score in the last 20 generations.
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image8.png)
+
 _Highest score over iterations for initial_learning_rate = 0.6, decrease_factor = 0.01, min_learning_rate = 0.001, gamma = 0.99 and epsilon = 0.1_
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image9.png)
+
 _Evolution of all agents over the training and the moments when they reached the target_
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image10.png)
-_Evolution of Agent 1 over the training _
+
+_Evolution of Agent 1 over the training_
 
 This approach improved the number of times that the agents reached the target and also made them achieve a lower score in a shorter period of time.
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image11.png)
+
 _Evolution of the learning rate_
 
 The above figure illustrates how the learning rate decreases during training. And as it can be seen it decreases slowly and stays around 0.5, the values that we first discovered that improves the agent performance.
@@ -214,17 +223,21 @@ We used this decay in a previous project, but we couldn’t adapt it in this pro
 This decay is based on the total number of epochs, the current step, an initial learning rate and a decreasing factor. Here we encountered the problem of deciding whether the maximum number of epochs should count a product of epochs and steps per it or just the actual epochs. In both scenarios, the learning rate dropped too fast. 
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image13.png)
+
 _Highest score over iterations using a cosine decay for learning rate, considering max_number_of_epochs = number_epochs*steps_per_epoch_
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image14.png)
+
 _Evolution of all agents over the training and the moments when they reached the target_
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image15.png)
-_Evolution of Agent 2 over the training _
+
+_Evolution of Agent 2 over the training_
 
 As it can be seen, the overall score achieved in the entire training session is not that good, but the agents still reach the target after a few iterations and quite a lot of times. I think that the learning rate decreased too quickly because of how we chose the maximum number of epochs.
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image16.png)
+
 _Evolution of the learning rate_
 
 The above figure illustrates perfectly how the learning rate is mostly constant, taking the value of the minimum learning rate we declared, because otherwise it would have vanished.
@@ -236,13 +249,16 @@ Using that implementation, we wanted to add a decay for the exploration-exploita
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image17.png)
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image18.png)
+
 _Snippet of code for the implementation_
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image19.png)
+
 _Highest score over iterations using a step decay for learning rate and exploration-exploitation trade off decay_
 
 ![img](https://github.com/DragosGhinea/RL_SmartNPC/blob/main/images/image20.png)
-_Evolution of Agent 2 over the training _
+
+_Evolution of Agent 2 over the training_
 
 **Conclusions**
 
