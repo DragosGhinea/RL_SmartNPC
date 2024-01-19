@@ -46,7 +46,7 @@ public class GeneticRoute implements CommandRoute {
         }
 
         TrainGenetic trainGenetic = TrainGenetic.trainGenetic(iterations, episodes, steps);
-        if (trainGenetic != null) {
+        if (trainGenetic != null && !trainGenetic.isRunning()) {
             Bukkit.getScheduler().runTaskAsynchronously(SmartNPC.getInstance(), trainGenetic::startTraining);
             sender.sendMessage("§aGenetic training started!");
         }

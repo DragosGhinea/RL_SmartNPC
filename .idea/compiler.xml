@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="RL_SmartNPC" />
+        <module name="SmartNPC" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="RL_SmartNPC" target="17" />
+      <module name="SmartNPC" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

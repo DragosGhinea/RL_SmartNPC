@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import ro.smartnpc.SmartNPC;
+import ro.smartnpc.algorithms.DeepQLearningAlgorithm;
 import ro.smartnpc.algorithms.QLearningAlgorithm;
 import ro.smartnpc.npc.EnvironmentNPC;
 
@@ -24,14 +25,20 @@ public class Environment {
     private EnvironmentWorld environmentWorld;
     private List<EnvironmentNPC> agents;
 
-    public Environment(EnvironmentWorld environmentWorld, int numberOfAgents) {
+    public Environment(EnvironmentWorld environmentWorld, int numberOfAgents, boolean deepLearning) {
         instance = this;
         this.environmentWorld = environmentWorld;
         agents = new ArrayList<>(numberOfAgents);
-        registerAgents(numberOfAgents);
+        registerAgents(numberOfAgents, deepLearning);
     }
 
-    public void registerAgents(int numberOfAgents) {
+    public void registerAgents(int numberOfAgents, boolean deep) {
+        if (deep) {
+            //hard coding 1 agent since the socket can't handle more than 1 agent currently
+            agents.add(new EnvironmentNPC("Agent0", this, new DeepQLearningAlgorithm(0)));
+            return;
+        }
+
         for (int i = 0; i < numberOfAgents; i++)
             agents.add(new EnvironmentNPC("Agent"+i, this, new QLearningAlgorithm()));
     }

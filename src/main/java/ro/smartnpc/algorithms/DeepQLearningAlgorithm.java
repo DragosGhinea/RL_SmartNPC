@@ -3,28 +3,27 @@ package ro.smartnpc.algorithms;
 import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import ro.smartnpc.SmartNPC;
-import ro.smartnpc.Utils;
 import ro.smartnpc.algorithms.actions.Action;
-//import ro.smartnpc.algorithms.actions.movement.walk.ActionBackward;
-//import ro.smartnpc.algorithms.actions.movement.walk.ActionForward;
-//import ro.smartnpc.algorithms.actions.movement.walk.ActionLeft;
-//import ro.smartnpc.algorithms.actions.movement.walk.ActionRight;
 import ro.smartnpc.algorithms.actions.movement.teleport.ActionBackward;
 import ro.smartnpc.algorithms.actions.movement.teleport.ActionForward;
 import ro.smartnpc.algorithms.actions.movement.teleport.ActionLeft;
 import ro.smartnpc.algorithms.actions.movement.teleport.ActionRight;
+import ro.smartnpc.algorithms.python.DeepQLearningProxy;
 import ro.smartnpc.algorithms.states.RelativeCoordinatesState;
 import ro.smartnpc.algorithms.states.State;
 import ro.smartnpc.npc.EnvironmentNPC;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class QLearningAlgorithm implements Algorithm {
+public class DeepQLearningAlgorithm implements Algorithm {
+    private final DeepQLearningProxy proxy;
     private final List<Action> actions = new ArrayList<>() {
         {
             add(new ActionForward());
@@ -33,19 +32,15 @@ public class QLearningAlgorithm implements Algorithm {
             add(new ActionRight());
         }
     };
-    private static final double GAMMA = 0.99;  // Discount factor
-    private static final double INITIAL_LR = 0.6; // initial learning rate
-    private static final double MIN_LR = 0.001; // minimum value for learning rate
-    private static final double DECREASING_FACTOR_LR = 0.01; // a factor for the learning rate decay
     private static final double EPSILON = 0.1;  // Exploration-exploitation trade-off
-    private double ALPHA;  // Learning rate
-    private int currentStep = 0;
 
+    public DeepQLearningAlgorithm(int id) {
+        proxy = new DeepQLearningProxy(id);
 
-    private Map<State, Map<Integer, Double>> Q = new HashMap<>();
+    }
 
     public Object getData(){
-        return Q;
+        return null;
     }
 
     private EnvironmentNPC environmentNPC;
@@ -57,22 +52,11 @@ public class QLearningAlgorithm implements Algorithm {
         environmentNPC = npc;
     }
 
-    private int epsilonGreedyPolicy(State state) {
-        Map<Integer, Double> actionValues = Q.get(state);
-
-        if (actionValues == null || Math.random() < EPSILON) {
+    private int epsilonGreedyPolicy(RelativeCoordinatesState state) {
+        if (Math.random() < EPSILON) {
             return getRandomAction();
         } else {
-            return argmaxAction(actionValues);
-        }
-    }
-
-    private int getActionTesting(State state) {
-        Map<Integer, Double> actionValues = Q.get(state);
-        if (actionValues == null) {
-            return -1;
-        } else {
-            return argmaxAction(actionValues);
+            return proxy.getNextAction(state);
         }
     }
 
@@ -80,23 +64,13 @@ public class QLearningAlgorithm implements Algorithm {
         return new Random().nextInt(actions.size());
     }
 
-    private int argmaxAction(Map<Integer, Double> actionValues) {
-        int maxAction = 0;
-        double maxValue = Double.NEGATIVE_INFINITY;
-        for (Map.Entry<Integer, Double> entry : actionValues.entrySet()) {
-            if (entry.getValue() > maxValue) {
-                maxAction = entry.getKey();
-                maxValue = entry.getValue();
-            }
-        }
-        return maxAction;
-    }
+
 
     private boolean reachedTarget(State state) {
         return state.isFinalState(environmentNPC);
     }
 
-    private State takeAction(State currentState, int actionIndex) {
+    private RelativeCoordinatesState takeAction(RelativeCoordinatesState currentState, int actionIndex) {
         Action action = actions.get(actionIndex);
         CompletableFuture<Void> future = new CompletableFuture<>();
         Bukkit.getScheduler().runTask(SmartNPC.getInstance(),
@@ -119,27 +93,7 @@ public class QLearningAlgorithm implements Algorithm {
         return state.getReward(previousState, environmentNPC);
     }
 
-    private void updateQValue(State state, int action, double reward, State nextState) {
-        // Q-learning update rule
-        double currentQValue = Q.getOrDefault(state, new HashMap<>()).getOrDefault(action, 0.0);
-        double maxNextQValue = maxQValue(nextState);
-        double updatedQValue = currentQValue + ALPHA * (reward + GAMMA * maxNextQValue - currentQValue);
-
-        // Update Q-value in the map
-        Q.computeIfAbsent(state, k -> new HashMap<>()).put(action, updatedQValue);
-    }
-
-    private double maxQValue(State state) {
-        // Find the maximum Q-value for the given state.
-        Map<Integer, Double> actionValues = Q.get(state);
-        if (actionValues == null) {
-            return 0.0;  // If no Q-values are available, assume 0.
-        }
-
-        return actionValues.values().stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
-    }
-
-    private State processState() {
+    private RelativeCoordinatesState processState() {
         return new RelativeCoordinatesState(environmentNPC.getNPC().getEntity().getLocation(), environmentNPC.getEnvironment().getTarget());
     }
 
@@ -147,30 +101,24 @@ public class QLearningAlgorithm implements Algorithm {
 
     @Override
     public boolean step() {
-        State currentState = processState();
+        RelativeCoordinatesState currentState = processState();
         if (reachedTarget(currentState))
             return false;
 
-        if (testing) {
-            int action = getActionTesting(currentState);
-            if (action == -1) {
-                SmartNPC.getInstance().getLogger().info("No action found for state " + currentState);
-                return false;
-            }
-            takeAction(currentState, action);
-            return true;
-        }
-
         int action = epsilonGreedyPolicy(currentState);
-        State nextState = takeAction(currentState, action);
-        //SmartNPC.getInstance().getLogger().info("Next State: " + nextState);
+        RelativeCoordinatesState nextState = takeAction(currentState, action);
 
         double reward = getReward(currentState, nextState);
 
+        if (!testing)
+            try {
+                proxy.sendToBuffer(currentState, action, reward, nextState, nextState.isFinalState(environmentNPC));
+            }catch(Exception x){
+                x.printStackTrace();
+            }
+
         totalReward += reward;
 
-        // Q-learning update rule
-        updateQValue(currentState, action, reward, nextState);
         return true;
     }
 
@@ -215,24 +163,17 @@ public class QLearningAlgorithm implements Algorithm {
     @Override
     public void train(int numberOfEpisodes, int numberOfStepsPerEpisode) {
         forceStopTraining = false;
-        currentStep = 0;
 
         double trainingScore = 0;
         for (int i = 0; i < numberOfEpisodes; i++) {
-
-            ALPHA = Math.max((1 / (1 + DECREASING_FACTOR_LR * currentStep)) * INITIAL_LR, MIN_LR);
-
             runEpisode(numberOfStepsPerEpisode);
             if (forceStopTraining) {
                 break;
             }
 
             double episodeReward = totalReward / numberOfStepsPerEpisode;
-            SmartNPC.getInstance().getLogger().info("[" + environmentNPC.getName() + "] Reward average episode " + i + ": " + (episodeReward) + " and LR " + (ALPHA));
+            SmartNPC.getInstance().getLogger().info("[" + environmentNPC.getName() + "] Reward average episode " + i + ": " + (episodeReward));
             trainingScore += episodeReward;
-
-            currentStep += 1;
-
             reset();
         }
 
@@ -265,8 +206,7 @@ public class QLearningAlgorithm implements Algorithm {
     @Override
     public void destroy() {
         forceStopTraining();
-        forceStopTesting();
-        Q.clear();
+        forceStopTesting();;
 
         for (Action action : actions) {
             action.destroy();
@@ -276,15 +216,13 @@ public class QLearningAlgorithm implements Algorithm {
 
     @Override
     public void saveCurrentData(File whereToSave) {
-        Utils.serialize(Q, whereToSave);
+
     }
 
     @Override
     public void loadCurrentData(File fromWhereToLoad) {
         score = 0;
-        Q = Utils.deserializeQ(fromWhereToLoad);
-        if (Q == null)
-            Q = new HashMap<>();
+
     }
 
     @Override

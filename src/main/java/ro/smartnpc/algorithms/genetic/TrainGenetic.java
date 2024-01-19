@@ -113,10 +113,9 @@ public class TrainGenetic {
     public static TrainGenetic trainGenetic(int numberOfIterations, int numberOfEpisodes, int numberOfStepsPerEpisode) {
         if (instance == null) {
             instance = new TrainGenetic(numberOfIterations, numberOfEpisodes, numberOfStepsPerEpisode);
-            return instance;
         }
 
-        return null;
+        return instance;
     }
 
     public boolean isRunning() {

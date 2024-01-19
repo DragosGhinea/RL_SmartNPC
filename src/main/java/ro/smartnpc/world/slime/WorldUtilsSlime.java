@@ -25,7 +25,7 @@ public class WorldUtilsSlime implements WorldUtils {
         this.slimePlugin = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
 
         properties = new SlimePropertyMap() {{
-            setValue(SlimeProperties.DIFFICULTY, "normal");
+            setValue(SlimeProperties.DIFFICULTY, "peaceful");
             setValue(SlimeProperties.WORLD_TYPE, "default_1_1");
             setValue(SlimeProperties.SPAWN_X, 0);
             setValue(SlimeProperties.SPAWN_Y, 60);

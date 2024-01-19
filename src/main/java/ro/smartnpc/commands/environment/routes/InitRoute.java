@@ -22,6 +22,31 @@ public class InitRoute implements CommandRoute {
             return false;
         }
 
+        if (args[1].equals("deep")) {
+            Player player = (Player) sender;
+            sender.sendMessage("§aLoading world settings...");
+            EnvironmentWorld environmentWorld = new EnvironmentWorld("movement", Schematic.MOVEMENT_ARENA1);
+            final Environment environment = new Environment(environmentWorld, 1, true);
+
+            sender.sendMessage("§aLoading world...");
+            environment.init().whenComplete((world, throwable) -> {
+                if (throwable != null) {
+                    throwable.printStackTrace();
+                }
+
+                environment.setTarget(environmentWorld.getWorld().getSpawnLocation().clone().add(0, 0, 36));
+
+                sender.sendMessage("§aTeleporting to world...");
+
+                Bukkit.getScheduler().runTask(SmartNPC.getInstance(), () -> {
+                    player.teleport(world.getSpawnLocation());
+                });
+
+                sender.sendMessage("§aWorld loaded!");
+            });
+            return false;
+        }
+
         int agents;
         try{
             agents = Integer.parseInt(args[1]);
@@ -33,7 +58,7 @@ public class InitRoute implements CommandRoute {
         Player player = (Player) sender;
         sender.sendMessage("§aLoading world settings...");
         EnvironmentWorld environmentWorld = new EnvironmentWorld("movement", Schematic.MOVEMENT_ARENA1);
-        final Environment environment = new Environment(environmentWorld, agents);
+        final Environment environment = new Environment(environmentWorld, agents, false);
 
         sender.sendMessage("§aLoading world...");
         environment.init().whenComplete((world, throwable) -> {

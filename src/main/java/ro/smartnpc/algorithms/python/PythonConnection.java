@@ -2,8 +2,7 @@ package ro.smartnpc.algorithms.python;
 
 import ro.smartnpc.SmartNPC;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class PythonConnection {
@@ -22,7 +21,7 @@ public class PythonConnection {
 
     private Socket socket;
 
-    private InputStream inputStream;
+    private BufferedReader inputReader;
     private OutputStream outputStream;
 
     private PythonConnection() {
@@ -34,10 +33,10 @@ public class PythonConnection {
             if (socket == null || socket.isClosed()) {
                 socket = new Socket(SERVER_HOST, SERVER_PORT);
 
-                inputStream = socket.getInputStream();
+                inputReader = new BufferedReader(new InputStreamReader(PythonConnection.getInstance().getInputStream()));
                 outputStream = socket.getOutputStream();
 
-                socket.setSoTimeout(1000);
+                socket.setSoTimeout(7000);
             }
             return true;
         } catch (Exception e){
@@ -47,8 +46,17 @@ public class PythonConnection {
         return false;
     }
 
-    public InputStream getInputStream() {
-        return inputStream;
+    public void reconnect() {
+        closeConnection();
+        connect();
+    }
+
+    public InputStream getInputStream() throws IOException {
+        return socket.getInputStream();
+    }
+
+    public BufferedReader getInputReader() {
+        return inputReader;
     }
 
     public OutputStream getOutputStream() {
