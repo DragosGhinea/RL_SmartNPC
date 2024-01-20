@@ -288,4 +288,4 @@ We haven’t had enough time to properly test and play around with this implemen
 4. https://hal.science/hal-02062157/document
 5. https://medium.com/@aniket.tcdav/deep-q-learning-with-tensorflow-2-686b700c868b
 6. https://aleksandarhaber.com/deep-q-networks-dqn-in-python-from-scratch-by-using-openai-gym-and-tensorflow-reinforcement-learning-tutorial/
-7. Păduraru Ciprian, Iordache Ştefan, Iordache Camelia (2023). _Reinforcement Learning Course_. University of Bucharest, Faculty of Mathematics and Computer Science
+7. Ștefan Iordache, Cătălina Iordache, Ciprian Păduraru (2023). _Reinforcement Learning Course_. University of Bucharest, Faculty of Mathematics and Computer Science
