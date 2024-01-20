@@ -12,7 +12,7 @@ SmartNPC is a **minecraft server plugin** that creates a specialized environment
   - Gabriel-Bogdan Iliescu
   - Ștefania Rîncu
 
-## Setup Helpers and Dependencies
+## Dependencies
 
 The plugin obviously needs a minecraft server to run, but it is hooked to other dependencies as well, and not just any type of minecraft server. We will list the dependencies below, including their purpose.
 
@@ -26,7 +26,7 @@ The plugin obviously needs a minecraft server to run, but it is hooked to other 
 
 * **PythonServer (Deep Learning Dependency Only)** - Included in our project files, we hook to it via sockets to train a deep q learning model. More details regarding running it will be given at a further section.
 
-## Setup Helpers and Dependencies
+## Setup Helpers
 
 * Starting the minecraft server:
    Enter the ProjectServer folder
