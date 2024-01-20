@@ -33,7 +33,7 @@ The plugin obviously needs a minecraft server to run, but it is hooked to other 
    Start the slimeworld_server.jar
    You can now enter the server on localhost:25565
 
-  (i) We usually start the server from inside the development IDE (IntelIJ) via a configuration that has the following settings:
+  (i) We usually start the server from inside the development IDE (IntelliJ) via a configuration that has the following settings:
 
   | Setting                 | Value                              |
   | ----------------------- | ---------------------------------- |
